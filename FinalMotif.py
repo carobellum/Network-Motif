@@ -12,7 +12,7 @@ import random as rd
 import math
 import heapq
 import json
-import cPickle as pickle
+import _pickle as cPickle
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -87,7 +87,7 @@ def permttest(d1, d2, kmax=5000):  # d is vector with 2 groups of data, maxk = m
     dtot = d1 + d2
     mvreal = 1.0 * sum(d1) / n1 - 1.0 * sum(d2) / n2
     mvs = []
-    #shuffle and compute
+    # shuffle and compute
     for k in range(kmax):
         rd.shuffle(dtot)
         nd1 = dtot[0:n1]
@@ -108,10 +108,10 @@ def makeSwapData(degree=10):
     swapData = {}
 
     for key, graphs in data.iteritems():
-        print "Current Group: " + str(key)
+        print("Current Group: " + str(key))
         keyData = []
         for i, G in enumerate(graphs):
-            print "Edge-Swapping Graph:", i
+            print("Edge-Swapping Graph:", i)
             sortedWeights = np.sort(G, axis=None)
             threshold = sortedWeights[-len(G) * degree - 1]
 
@@ -134,7 +134,7 @@ def buildCache(motifSize, degree):
 
     for corr in ("corr", "lcorr", "lacorr"):
         for ty in ("AD", "MCI", "NL", "CONVERT"):
-            print "Building Cache for " + str((corr, ty))
+            print("Building Cache for " + str((corr, ty)))
             findMotifs(data, (ty, corr), motifSize, degree, randGraphs)
             findMotifs(data, (ty, corr), motifSize, degree)
 
@@ -147,7 +147,7 @@ def findMotifs(data, key, motifSize=3, degree=10, randGraphs=None, useCache=True
         numpatients = float(len(motifs))
         for patient, motifdict in motifs:
             for motif, freq in motifdict.items():
-                #		 print motif, freq
+                #		 print(motif, freq)
                 tempmotifdict[motif] += freq / numpatients
 
         motiflist = sorted(tempmotifdict.iteritems(),
@@ -174,7 +174,7 @@ def findMotifs(data, key, motifSize=3, degree=10, randGraphs=None, useCache=True
     filename += str(key) + 's' + str(int(motifSize)) + \
         'd' + str(int(degree)) + ".json"
     if os.path.exists('cache/' + filename) and useCache:
-        print "in cache"
+        print("in cache")
         cachedata = json.load(open('cache/' + filename, "rb"))
         if printMotifs:
             frequency_filename = "MotifFrequencyDegree{}/{}.txt".format(
@@ -195,7 +195,7 @@ def findMotifs(data, key, motifSize=3, degree=10, randGraphs=None, useCache=True
         # calculate threshold
         sortedWeights = np.sort(G, axis=None)
         threshold = sortedWeights[-len(G) * degree - 1]
-        # Print progress
+        # print(progress)
         sys.stdout.write("\rMotif Finding Progress: " + str(index) + numstring)
         sys.stdout.write(" Threshold: " + str(threshold) + '\n')
         sys.stdout.flush()
@@ -221,12 +221,12 @@ def findMotifs(data, key, motifSize=3, degree=10, randGraphs=None, useCache=True
             personMotifs[unicode(int(iD))] = total / subgraphs
         motifs.append((int(subgraphs), personMotifs))
 
-    print '\nMotifs Done! Graphs Rejected: ' + str(rejected)
+    print('\nMotifs Done! Graphs Rejected: ' + str(rejected))
 
     # add motifs to cache
 
     # if printMotifs:
-    #	print motifs
+    #	print(motifs)
 
     if useCache:
         if not os.path.isdir('cache'):
@@ -348,7 +348,7 @@ def PDFstats(data, filename, edgeSwap=False, motifSize=3, degree=10):
 
         statistics = {}
         for corr in ('corr', 'lcorr'):
-            print "Starting " + corr + "..."
+            print("Starting " + corr + "...")
             motifsNL = findMotifs(data, ('NL', corr),
                                   motifSize=motifSize, degree=degree)
             motifsMCI = findMotifs(data, ('MCI', corr),
@@ -567,7 +567,7 @@ def PDFstatsShuf(data, filename, motifSize=3, degree=10):
 
         statistics = {}
         for corr in ('corr', 'lcorr', 'lacorr'):
-            print "Starting " + corr + "..."
+            print("Starting " + corr + "...")
             motifsNL = findMotifs(data, ('NL', corr),
                                   motifSize=motifSize, degree=degree)
             motifsMCI = findMotifs(data, ('MCI', corr),
@@ -704,7 +704,7 @@ def PDFdiststats(data, filename, edgeSwap=False, motifSize=3, degree=10):
 
         statistics = {}
         for corr in ('corr', 'lcorr', 'lacorr'):
-            print "Starting " + corr + "..."
+            print("Starting " + corr + "...")
             motifsNL = findMotifs(data, ('NL', corr),
                                   motifSize=motifSize, degree=degree)
             NLd = diststats(motifsNL)
@@ -757,7 +757,7 @@ def PDFdiststats(data, filename, edgeSwap=False, motifSize=3, degree=10):
                 "\\begin{tabular}{|c|c|c|c|c|c|c|}\n"
                 "\\hline\n"
                 "\\rowcolor[gray]{0.85}\n"
-                #"Measure & NL to MCI & NL to AD & NL to Conv & MCI to AD & MCI to Conv & AD to Conv & NL to Rand & MCI to Rand & AD to Rand & Conv to Rand \\\\ \\hline\n"
+                # "Measure & NL to MCI & NL to AD & NL to Conv & MCI to AD & MCI to Conv & AD to Conv & NL to Rand & MCI to Rand & AD to Rand & Conv to Rand \\\\ \\hline\n"
                 "Measure & NL to MCI & NL to AD & NL to Conv & MCI to AD & MCI to Conv & AD to Conv \\\\ \\hline\n"
             )
             for stat in motifStats:
@@ -881,7 +881,7 @@ def rawMotifDataCSV(data):
 
     for pat, corr, size in itertools.product(pats, corrs, sizes):
         filename = "{}{}{}.csv".format(pat, corr, size)
-        print filename
+        print(filename)
         with open("MotifRawData/" + filename, "wb") as f:
             writer = csv.writer(f)
             writer.writerow(["Motif ID", "Mean", "STD"])
@@ -897,7 +897,7 @@ def rawDistDataCSV(data):
 
     for pat, corr, size in itertools.product(pats, corrs, sizes):
         filename = "Dist{}{}{}.csv".format(pat, corr, size)
-        print filename
+        print(filename)
         with open("RawDistStats/" + filename, "wb") as f:
             writer = csv.writer(f)
             writer.writerow(
@@ -913,13 +913,13 @@ def rawMotifTTestCSV(data):
 
     for corr, size in itertools.product(corrs, sizes):
         filename = "NonParametricT_test{}{}.csv".format(corr, size)
-        print filename
+        print(filename)
 
         with open("SwapData10" + ".pkl", "rb") as pic:
             randGraphs = pickle.load(pic)
 
         # randoms
-        print "RANDOMS"
+        print("RANDOMS")
         motifsNLER = findMotifs(data, "rand", motifSize=size)
         motifsADER = findMotifs(data, "rand", motifSize=size)
         motifsNLDD = findMotifs(
@@ -928,7 +928,7 @@ def rawMotifTTestCSV(data):
             data, ('AD', corr), motifSize=size, randGraphs=randGraphs)
 
         # normal datas
-        print "Normals"
+        print("Normals")
         motifsNL = findMotifs(data, ('NL', corr), motifSize=size)
         motifsMCI = findMotifs(data, ('MCI', corr), motifSize=size)
         motifsAD = findMotifs(data, ('AD', corr), motifSize=size)
@@ -963,10 +963,10 @@ def rawMotifTTestCSV(data):
             writer = csv.writer(f)
             writer.writerow(["Motif", "NL/AD", "NL/MCI", "MCI/CONV", "AD/CONV",
                              "NL/ER(NL)", "NL/DD(NL)", "AD/DD(AD)", "AD/ER(AD)"])
-            print "t-test"
+            print("t-test")
             total = len(allMotifs)
             for num, key in enumerate(allMotifs):
-                print "Key {} of {}".format(num + 1, total)
+                print("Key {} of {}".format(num + 1, total))
                 norm = motifsNL[key]
                 mci = motifsMCI[key]
                 ad = motifsAD[key]
@@ -988,7 +988,7 @@ def rawDistTTestCSV(data):
 
     for corr, size in itertools.product(corrs, sizes):
         filename = "NonParametricT_test{}{}.csv".format(corr, size)
-        print filename
+        print(filename)
 
         with open("SwapData10" + ".pkl", "rb") as pic:
             randGraphs = pickle.load(pic)
@@ -1017,7 +1017,7 @@ def rawDistTTestCSV(data):
             writer = csv.writer(f)
             writer.writerow(["Measure", "NL/AD", "NL/MCI", "MCI/CONV",
                              "AD/CONV", "NL/ER(NL)", "NL/DD(NL)", "AD/ER(AD)", "AD/DD(AD)"])
-            print "t-test"
+            print("t-test")
             for pos, key in enumerate(('Entrophy', 'Gini Coeff')):
                 sign, c1 = permttest(NLd[pos], ADd[pos])
                 sign, c2 = permttest(NLd[pos], MCId[pos])
@@ -1035,14 +1035,14 @@ def main():
         data = pickle.load(f)
 
     # with open("SwapData" + str(degree) + ".pkl","rb") as pic:
-        #randGraphs = pickle.load(pic)
+        # randGraphs = pickle.load(pic)
 
         motifSize = 5
 
         for corr in ("corr", "lcorr", "lacorr"):
             for ty in ("AD", "MCI", "NL", "CONVERT"):
                 for degree in (8, 12):
-                    print "Calculating" + str((corr, ty))
+                    print("Calculating" + str((corr, ty)))
                     findMotifs(data, (ty, corr), motifSize,
                                degree, printMotifs=True)
 
