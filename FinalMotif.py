@@ -21,7 +21,7 @@ import operator
 import csv
 import itertools
 from scipy.sparse import dok_matrix
-from itertools import izip
+# from itertools import izip # izip not available for Python 3
 from itertools import repeat
 from collections import defaultdict
 GRAPHSIZE = 88
@@ -63,7 +63,7 @@ class MotifData:
 
     def iterTotals(self):
         "Iterate through total number of motifs for each patient"
-        for d, sub in izip(self.data, self.subgraphs):
+        for d, sub in zip(self.data, self.subgraphs):
             t = {}
             for motif, value in d.iteritems():
                 t[int(i)] = int(value * sub + 0.1)
